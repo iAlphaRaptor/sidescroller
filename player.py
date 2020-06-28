@@ -28,11 +28,12 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey(colours["WHITE"])
 
         self.rect = self.image.get_rect()
-        self.rect.x = 250
-        self.rect.y = 250
+        self.rect.x = 0
+        self.rect.y = 0
 
         self.velX = 0
         self.velY = 0
+        self.colliding = False
 
         self.image.blit(manImage, (0, 0))
 
@@ -49,12 +50,25 @@ class Player(pygame.sprite.Sprite):
         else:
             self.velX = 0
 
-    def changeVelY(self):
-        if self.rect.y < self.screenY - self.size[1]:
-            self.velY += 1
+    def changeVelY(self, colliding):
+        if not colliding:
+            self.velY += 0.5
         elif self.velY > 0:
             self.velY = 0
 
     def jump(self, bounce):
-        if self.rect.y >= self.screenY - self.size[1]:
+        if self.colliding:
             self.velY = -bounce
+
+    def willCollide(self, collisionRects):
+        tempRect = self.rect
+        tempRect.x += self.velX
+        tempRect.y += self.velY
+
+        for rectangle in collisionRects:
+            if tempRect.colliderect(rectangle):
+                self.colliding = True
+                return True
+        else:
+            self.colliding = False
+            return False
