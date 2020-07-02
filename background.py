@@ -1,5 +1,6 @@
 import pygame
 from rainbow import colours
+from platform import Platform
 pygame.init()
 
 class Background(pygame.sprite.Sprite):
@@ -24,8 +25,8 @@ class Background(pygame.sprite.Sprite):
 
         ## Gets dictionary of all rows containing pixels of the target colour.
         targetPixels = {}
-        for i in range(self.height):
-            for j in range(self.width):
+        for i in range(0, self.height, 6):
+            for j in range(0, self.width, 1):
                 if self.picture.get_at((j, i)) == colour:
                     if i in targetPixels.keys():
                         targetPixels[i].append(j)
@@ -62,8 +63,8 @@ class Background(pygame.sprite.Sprite):
                 moreTemp.append([rowID, temp])
             seperateRects.append(moreTemp)
 
-        ## Creates pygame Rect objects from the list of points.
-        rects = []
+        ## Creates platform.Platform objects from the list of points.
+        rects = pygame.sprite.Group()
         for listOfRects in seperateRects:
             for rect in listOfRects:
                 for i in range(int(len(rect[1]) / 2)):
@@ -72,6 +73,6 @@ class Background(pygame.sprite.Sprite):
                     width = rect[1][(i*2)+1] - rect[1][i*2]
                     height = 1
 
-                    rects.append(pygame.Rect(left, top, width, height))
+                    rects.add(Platform(left, top, width, height))
 
         return rects

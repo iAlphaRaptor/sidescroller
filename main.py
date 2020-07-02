@@ -23,12 +23,15 @@ def loadImage(*imgs, dest=False):
         for img in imgs:
             dest.append(pygame.image.load(img))
 
-backgroundsList = [Background(pygame.transform.scale(loadImage("Images/background2.png"), (SCREENWIDTH, SCREENHEIGHT)))]
+backgroundsList = [Background(pygame.transform.scale(loadImage("Images/background.png"), (SCREENWIDTH, SCREENHEIGHT))),
+                   Background(pygame.transform.scale(loadImage("Images/background2.png"), (SCREENWIDTH, SCREENHEIGHT))),
+                   Background(pygame.transform.scale(loadImage("Images/background3.png"), (SCREENWIDTH, SCREENHEIGHT))),
+                   Background(pygame.transform.scale(loadImage("Images/background4.png"), (SCREENWIDTH, SCREENHEIGHT)))]
 backgrounds = pygame.sprite.Group()
 for background in backgroundsList:
     backgrounds.add(background)
 
-currentBackground = pygame.sprite.GroupSingle(backgroundsList[0])
+currentBackground = pygame.sprite.GroupSingle(backgroundsList[1])
 player = pygame.sprite.GroupSingle(Player("X", SCREENWIDTH, SCREENHEIGHT))
 
 while carryOn:
@@ -38,12 +41,12 @@ while carryOn:
 
     keys = pygame.key.get_pressed()
 
-    player.sprite.changeVelX(keys[pygame.K_RIGHT] - keys[pygame.K_LEFT], 4)
+    if keys[pygame.K_UP]:
+        player.sprite.jump(12)
+
+    player.sprite.changeVelX(keys[pygame.K_RIGHT] - keys[pygame.K_LEFT], 5)
     player.sprite.changeVelY(player.sprite.willCollide(currentBackground.sprite.boundingRects))
     player.sprite.updateMove()
-
-    if keys[pygame.K_UP]:
-        player.sprite.jump(7)
 
     screen.fill(colours["WHITE"])
     currentBackground.draw(screen)

@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
 
         self.velX = 0
         self.velY = 0
-        self.colliding = False
+        self.colliding = []
 
         self.image.blit(manImage, (0, 0))
 
@@ -43,32 +43,52 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.velY
 
     def changeVelX(self, direction, pixels):
+        print(self.colliding)
         if direction > 0:
-            self.velX = pixels
+            if "RIGHT" not in self.colliding:
+                self.velX = pixels
+            else:
+                self.velX = 0
         elif direction < 0:
-            self.velX = -pixels
+            if "LEFT" not in self.colliding:
+                self.velX = -pixels
+            else:
+                self.velX = 0
         else:
             self.velX = 0
 
     def changeVelY(self, colliding):
-        if not colliding:
+        if "BOTTOM" not in self.colliding and "TOP" not in self.colliding:
             self.velY += 0.5
-        elif self.velY > 0:
+        else:
             self.velY = 0
 
     def jump(self, bounce):
-        if self.colliding:
+        if "BOTTOM" in self.colliding and self.velY == 0:
             self.velY = -bounce
 
     def willCollide(self, collisionRects):
-        tempRect = self.rect
-        tempRect.x += self.velX
-        tempRect.y += self.velY
+        self.colliding = []
 
-        for rectangle in collisionRects:
-            if tempRect.colliderect(rectangle):
-                self.colliding = True
-                return True
-        else:
-            self.colliding = False
-            return False
+        tempRect = pygame.sprite.Sprite()
+        tempRect.image = pygame.Surface([self.size[0], self.size[1]])
+        tempRect.rect = tempRect.image.get_rect()
+        tempRect.rect.x = self.rect.x + self.velX
+        tempRect.rect.y = self.rect.y + self.velY
+
+        tempRectGroup = pygame.sprite.Group(tempRect)
+
+        collidingWith = pygame.sprite.groupcollide(tempRectGroup, collisionRects, False, False)
+        if len(collidingWith) > 0:
+            for collisionRect in list(collidingWith.values())[0]:
+                if collisionRect.rect.x < self.rect.x :
+                    self.colliding.append("LEFT")
+                if collisionRect.rect.x >= self.rect.x + self.size[0] - 1:
+                    self.colliding.append("RIGHT")
+                if collisionRect.rect.y >= self.rect.y + self.size[1] - 1:
+                    self.colliding.append("BOTTOM")
+                if collisionRect.rect.y < self.rect.y:
+                    self.colliding.append("TOP")
+            return True
+
+        return False
