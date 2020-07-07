@@ -25,8 +25,8 @@ class Background(pygame.sprite.Sprite):
 
         ## Gets dictionary of all rows containing pixels of the target colour.
         targetPixels = {}
-        for i in range(0, self.height, 6):
-            for j in range(0, self.width, 1):
+        for i in range(0, self.height, 1):
+            for j in range(0, self.width, 8):
                 if self.picture.get_at((j, i)) == colour:
                     if i in targetPixels.keys():
                         targetPixels[i].append(j)

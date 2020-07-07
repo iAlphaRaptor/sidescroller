@@ -16,12 +16,14 @@ pygame.display.set_caption("Sidescroller Game")
 clock = pygame.time.Clock()
 carryOn = True
 
-def loadImage(*imgs, dest=False):
+def loadImage(*imgs):
     if len(imgs) == 1:
         return pygame.image.load(imgs[0])
     else:
+        temp = []
         for img in imgs:
-            dest.append(pygame.image.load(img))
+            temp.append(pygame.image.load(img))
+        return temp
 
 backgroundsList = [Background(pygame.transform.scale(loadImage("Images/background.png"), (SCREENWIDTH, SCREENHEIGHT))),
                    Background(pygame.transform.scale(loadImage("Images/background2.png"), (SCREENWIDTH, SCREENHEIGHT))),
@@ -31,7 +33,7 @@ backgrounds = pygame.sprite.Group()
 for background in backgroundsList:
     backgrounds.add(background)
 
-currentBackground = pygame.sprite.GroupSingle(backgroundsList[1])
+currentBackground = pygame.sprite.GroupSingle(backgroundsList[3])
 player = pygame.sprite.GroupSingle(Player("X", SCREENWIDTH, SCREENHEIGHT))
 
 while carryOn:

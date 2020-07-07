@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey(colours["WHITE"])
 
         self.rect = self.image.get_rect()
-        self.rect.x = 0
+        self.rect.x = 150
         self.rect.y = 0
 
         self.velX = 0
@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.velY
 
     def changeVelX(self, direction, pixels):
-        print(self.colliding)
+        ##print(self.colliding)
         if direction > 0:
             if "RIGHT" not in self.colliding:
                 self.velX = pixels
@@ -81,9 +81,9 @@ class Player(pygame.sprite.Sprite):
         collidingWith = pygame.sprite.groupcollide(tempRectGroup, collisionRects, False, False)
         if len(collidingWith) > 0:
             for collisionRect in list(collidingWith.values())[0]:
-                if collisionRect.rect.x < self.rect.x :
+                if collisionRect.rect.right >= self.rect.x:
                     self.colliding.append("LEFT")
-                if collisionRect.rect.x >= self.rect.x + self.size[0] - 1:
+                if collisionRect.rect.x <= self.rect.right:
                     self.colliding.append("RIGHT")
                 if collisionRect.rect.y >= self.rect.y + self.size[1] - 1:
                     self.colliding.append("BOTTOM")
