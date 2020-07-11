@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.velY
 
     def changeVelX(self, direction, pixels):
-        ##print(self.colliding)
+        #print(self.colliding)
         if direction > 0:
             if "RIGHT" not in self.colliding:
                 self.velX = pixels
@@ -81,9 +81,9 @@ class Player(pygame.sprite.Sprite):
         collidingWith = pygame.sprite.groupcollide(tempRectGroup, collisionRects, False, False)
         if len(collidingWith) > 0:
             for collisionRect in list(collidingWith.values())[0]:
-                if collisionRect.rect.right >= self.rect.x:
+                if collisionRect.rect.x >= self.rect.x and collisionRect.rect.y <= self.rect.y + self.size[1] - 5 and collisionRect.rect.y <= self.rect.y + self.size[1] + 5:
                     self.colliding.append("LEFT")
-                if collisionRect.rect.x <= self.rect.right:
+                if collisionRect.rect.x <= self.rect.x and collisionRect.rect.y <= self.rect.y + self.size[1] - 5 and collisionRect.rect.y <= self.rect.y + self.size[1] + 5:
                     self.colliding.append("RIGHT")
                 if collisionRect.rect.y >= self.rect.y + self.size[1] - 1:
                     self.colliding.append("BOTTOM")

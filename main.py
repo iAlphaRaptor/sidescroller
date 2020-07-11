@@ -25,23 +25,23 @@ def loadImage(*imgs):
             temp.append(pygame.image.load(img))
         return temp
 
-backgroundsList = [Background(pygame.transform.scale(loadImage("Images/background.png"), (SCREENWIDTH, SCREENHEIGHT))),
-                   Background(pygame.transform.scale(loadImage("Images/background2.png"), (SCREENWIDTH, SCREENHEIGHT))),
-                   Background(pygame.transform.scale(loadImage("Images/background3.png"), (SCREENWIDTH, SCREENHEIGHT))),
-                   Background(pygame.transform.scale(loadImage("Images/background4.png"), (SCREENWIDTH, SCREENHEIGHT)))]
+backgroundsList = [Background(pygame.transform.scale(loadImage("Images/background5.png"), (SCREENWIDTH, SCREENHEIGHT)))]
 backgrounds = pygame.sprite.Group()
 for background in backgroundsList:
     backgrounds.add(background)
 
-currentBackground = pygame.sprite.GroupSingle(backgroundsList[3])
+currentBackground = pygame.sprite.GroupSingle(backgroundsList[0])
 player = pygame.sprite.GroupSingle(Player("X", SCREENWIDTH, SCREENHEIGHT))
 
 while carryOn:
+    print(pygame.event.get())
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             carryOn=False
 
     keys = pygame.key.get_pressed()
+
+
 
     if keys[pygame.K_UP]:
         player.sprite.jump(12)
