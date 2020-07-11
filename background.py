@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 from rainbow import colours
 from platform import Platform
 pygame.init()
@@ -20,59 +20,21 @@ class Background(pygame.sprite.Sprite):
 
     def getBoundingRects(self, colour):
         """Searches through image to find rectangles of the given colour.
-        Returns list of pygame Rect objects.
+        Returns list of Platform objects which are used for collision detection.
         Colour should be given as a 4 number tuple with alpha included."""
 
+        start = time.time()
         ## Gets dictionary of all rows containing pixels of the target colour.
-        targetPixels = {}
-        for i in range(0, self.height, 1):
-            for j in range(0, self.width, 8):
+        targetPixels = []
+        for i in range(1, self.height-1, 1):
+            for j in range(1, self.width-1, 1):
                 if self.picture.get_at((j, i)) == colour:
-                    if i in targetPixels.keys():
-                        targetPixels[i].append(j)
-                    else:
-                        targetPixels[i] = [j]
+                    if self.picture.get_at((j+1, i)) != colour or self.picture.get_at((j-1, i)) != colour or self.picture.get_at((j, i+1)) != colour or self.picture.get_at((j, i-1)) != colour:
+                        targetPixels.append((j, i))
 
-        ## Sorts dictionary into a 2D list containing lists of pixels in the same rectangle.
-        currentLength = 0
-        temp = {}
-        rowRects = []
-        for row in targetPixels.keys():
-            if len(targetPixels[row]) != currentLength:
-                currentLength = len(targetPixels[row])
-
-                temp[row] = targetPixels[row]
-                rowRects.append(temp)
-                temp = {}
-            else:
-                temp[row] = targetPixels[row]
-        rowRects.append(temp)
-
-        ## Sorts each list further to differentiate between different rectangles in the same row.
-        seperateRects = []
-        for row in rowRects:
-            moreTemp = []
-            for rowID in row.keys():
-                pixelList = row[rowID]
-                temp = [pixelList[0]]
-                for i in range(1, len(pixelList)):
-                    if pixelList[i] - pixelList[i-1] != 1:
-                        temp.append(pixelList[i-1])
-                        temp.append(pixelList[i])
-                temp.append(pixelList[-1])
-                moreTemp.append([rowID, temp])
-            seperateRects.append(moreTemp)
-
-        ## Creates platform.Platform objects from the list of points.
         rects = pygame.sprite.Group()
-        for listOfRects in seperateRects:
-            for rect in listOfRects:
-                for i in range(int(len(rect[1]) / 2)):
-                    left = rect[1][i*2] + 1
-                    top = rect[0]
-                    width = rect[1][(i*2)+1] - rect[1][i*2]
-                    height = 1
+        for coords in targetPixels:
+            rects.add(Platform(coords[0], coords[1], 1, 1))
 
-                    rects.add(Platform(left, top, width, height))
-
+        print(time.time()-start)
         return rects
